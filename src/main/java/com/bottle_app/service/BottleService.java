@@ -1,6 +1,7 @@
 package com.bottle_app.service;
 
 import com.bottle_app.model.Bottle;
+import com.bottle_app.model.User;
 
 import java.util.Optional;
 
@@ -9,7 +10,7 @@ public interface BottleService {
 
     Optional<Bottle> getBottleById(long bottleid);
 
-    Iterable<Bottle> getBottleByReceiver(long receiverid);
+    Iterable<Bottle> getBottleByReceiver(User user, int page, int size);
 
     void updateBottle(long bottleid, Bottle bottle);
 

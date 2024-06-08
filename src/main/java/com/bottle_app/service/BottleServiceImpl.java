@@ -1,8 +1,13 @@
 package com.bottle_app.service;
 
 import com.bottle_app.model.Bottle;
+import com.bottle_app.model.User;
 import com.bottle_app.repository.BottleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -25,8 +30,9 @@ public class BottleServiceImpl implements BottleService{
 
     @Override
     //TO DO
-    public Iterable<Bottle> getBottleByReceiver(long receiverid) {
-        return null;
+    public Iterable<Bottle> getBottleByReceiver(User user, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return bottleRepository.findAll(pageable);
     }
 
     @Override
@@ -34,7 +40,7 @@ public class BottleServiceImpl implements BottleService{
         bottleRepository.findById(bottleid).ifPresent(dbBottle -> {
             dbBottle.setContent(bottle.getContent());
             dbBottle.setTitle(bottle.getTitle());
-            dbBottle.setCreated_at(bottle.getCreated_at());
+            dbBottle.setCreatedAt(bottle.getCreatedAt());
             bottleRepository.save(dbBottle);
         });
     }

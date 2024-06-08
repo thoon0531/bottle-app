@@ -21,5 +21,5 @@ public class Bottle {
     private String content;
 
     @Column(name = "CREATED_AT")
-    private Date created_at;
+    private Date createdAt;
 }

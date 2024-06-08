@@ -24,8 +24,8 @@ public class User {
     private String email;
 
     @Column(name = "CREATED_AT")
-    private Date created_at;
+    private Date createdAt;
 
     @Column(name = "UPDATED_AT")
-    private Date updated_at;
+    private Date updatedAt;
 }
