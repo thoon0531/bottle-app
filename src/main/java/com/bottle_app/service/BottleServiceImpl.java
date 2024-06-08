@@ -1,14 +1,19 @@
 package com.bottle_app.service;
 
+import com.bottle_app.dto.BottleResponseDto;
+import com.bottle_app.dto.PageResponseDto;
 import com.bottle_app.model.Bottle;
 import com.bottle_app.model.User;
 import com.bottle_app.repository.BottleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,9 +34,18 @@ public class BottleServiceImpl implements BottleService{
 
     @Override
     //TO DO
-    public Iterable<Bottle> getBottleByReceiver(User user, int page, int size) {
+    public PageResponseDto getBottleByReceiver(User user, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return bottleRepository.findAll(pageable);
+        Page<BottleResponseDto> bottlePage = bottleRepository.findAll(pageable).map(BottleResponseDto::entityToDto);
+
+        return PageResponseDto.builder()
+                .bottles(bottlePage.getContent())
+                .pageNo(page)
+                .pageSize(size)
+                .totalElements(bottlePage.getTotalElements())
+                .totalPages(bottlePage.getTotalPages())
+                .last(bottlePage.isLast())
+                .build();
     }
 
     @Override
