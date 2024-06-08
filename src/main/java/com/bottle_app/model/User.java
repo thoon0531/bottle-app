@@ -1,9 +1,10 @@
 package com.bottle_app.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 @Entity
@@ -23,9 +24,11 @@ public class User {
     @Column(name = "EMAIL")
     private String email;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-mm-dd hh:mm")
     @Column(name = "CREATED_AT")
     private Date createdAt;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-mm-dd hh:mm")
     @Column(name = "UPDATED_AT")
     private Date updatedAt;
 }

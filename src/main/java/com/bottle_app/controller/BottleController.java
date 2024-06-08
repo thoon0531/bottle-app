@@ -20,7 +20,7 @@ public class BottleController {
     public Iterable<Bottle> getAllBottles(int page, int size){
         //로그인한 유저의 정보를 받아와서 그 유저의 ID로 편지 찾는 기능을 구현해야 함
         //TO DO
-        return bottleService.getBottleByReceiver(new User(), 0, 10);
+        return bottleService.getBottleByReceiver(new User(), page, size);
     }
 
     @GetMapping("{id}")
