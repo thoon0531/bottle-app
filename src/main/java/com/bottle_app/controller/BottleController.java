@@ -18,7 +18,8 @@ public class BottleController {
 
     //get all bottles arrive at currently logging in user
     @GetMapping
-    public PageResponseDto getAllBottles(int page, int size){
+    public PageResponseDto getAllBottles(@RequestParam(required = false, defaultValue = "0") int page,
+                                         @RequestParam(required = false, defaultValue = "10") int size){
         //로그인한 유저의 정보를 받아와서 그 유저의 ID로 편지 찾는 기능을 구현해야 함
         //TO DO
         return bottleService.getBottleByReceiver(new User(), page, size);
