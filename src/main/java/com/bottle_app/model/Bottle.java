@@ -24,7 +24,7 @@ public class Bottle {
     @Column(name = "CONTENT")
     private String content;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     @Column(name = "CREATED_AT")
     private Date createdAt;
 

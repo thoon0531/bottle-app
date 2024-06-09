@@ -17,7 +17,7 @@ public class BottleResponseDto {
     private Long id;
     private String title;
     private String content;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private Date createdAt;
 
     public static BottleResponseDto entityToDto(Bottle bottle) {
