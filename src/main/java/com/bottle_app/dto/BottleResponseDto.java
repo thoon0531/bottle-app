@@ -1,6 +1,7 @@
 package com.bottle_app.dto;
 
 import com.bottle_app.model.Bottle;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class BottleResponseDto {
     private Long id;
     private String title;
     private String content;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm")
     private Date createdAt;
 
     public static BottleResponseDto entityToDto(Bottle bottle) {

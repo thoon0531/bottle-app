@@ -5,6 +5,8 @@ import com.bottle_app.dto.PageResponseDto;
 import com.bottle_app.model.Bottle;
 import com.bottle_app.model.User;
 import com.bottle_app.repository.BottleRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +21,7 @@ import java.util.Optional;
 @Service
 public class BottleServiceImpl implements BottleService{
 
+    private static final Logger log = LoggerFactory.getLogger(BottleServiceImpl.class);
     @Autowired
     private BottleRepository bottleRepository;
 
@@ -36,6 +39,8 @@ public class BottleServiceImpl implements BottleService{
     public PageResponseDto getBottleByReceiver(User user, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<BottleResponseDto> bottlePage = bottleRepository.findAll(pageable).map(BottleResponseDto::entityToDto);
+
+        //log.info(bottlePage.getContent().get(0).getCreatedAt().toString());
 
         return PageResponseDto.builder()
                 .bottles(bottlePage.getContent())
