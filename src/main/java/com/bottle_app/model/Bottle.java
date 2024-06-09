@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -28,6 +27,12 @@ public class Bottle {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-mm-dd hh:mm")
     @Column(name = "CREATED_AT")
     private Date createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User creator;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User receiver;
 
     @Builder
     public Bottle(String title, String content, Date createdAt) {

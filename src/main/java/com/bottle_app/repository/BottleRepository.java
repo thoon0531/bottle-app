@@ -1,14 +1,11 @@
 package com.bottle_app.repository;
 
 import com.bottle_app.model.Bottle;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
-
 @Repository
-public interface BottleRepository extends CrudRepository<Bottle, Long>, PagingAndSortingRepository<Bottle, Long> {
+public interface BottleRepository extends JpaRepository<Bottle, Long> {
 
     //To Do
     /*

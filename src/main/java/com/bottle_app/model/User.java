@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,4 +32,10 @@ public class User {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-mm-dd hh:mm")
     @Column(name = "UPDATED_AT")
     private Date updatedAt;
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.PERSIST)
+    private List<Bottle> created;
+
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.PERSIST)
+    private List<Bottle> received;
 }
