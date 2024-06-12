@@ -38,17 +38,6 @@ public class BottleServiceImpl implements BottleService{
     @Override
     public PageResponseDto getBottleByReceiver(User user, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-
-        if(bottleRepository.count() <= 0){
-            return PageResponseDto.builder()
-                    .bottles(new ArrayList<>())
-                    .pageNo(0)
-                    .pageSize(size)
-                    .totalElements(0)
-                    .totalPages(0)
-                    .last(true)
-                    .build();
-        }
         Page<BottleResponseDto> bottlePage = bottleRepository.findAll(pageable).map(BottleResponseDto::entityToDto);
 
         //log.info(bottlePage.getContent().get(0).toString());
