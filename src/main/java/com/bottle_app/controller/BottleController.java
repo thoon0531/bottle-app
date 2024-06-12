@@ -25,9 +25,8 @@ public class BottleController {
                                          @RequestParam(required = false, defaultValue = "10") int size){
         //로그인한 유저의 정보를 받아와서 그 유저의 ID로 편지 찾는 기능을 구현해야 함
         //TO DO
-        PageResponseDto pageDto = bottleService.getBottleByReceiver(new User(), page, size);
-        log.info(String.format("Date = %s",pageDto.getBottles().get(0).getCreatedAt().toString()));
-        return pageDto;
+
+        return bottleService.getBottleByReceiver(new User(), page, size);
     }
 
     @GetMapping("{id}")
