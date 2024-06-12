@@ -1,5 +1,6 @@
 package com.bottle_app.controller;
 
+import com.bottle_app.dto.BottleRequestDto;
 import com.bottle_app.dto.PageResponseDto;
 import com.bottle_app.model.Bottle;
 import com.bottle_app.model.User;
@@ -35,8 +36,8 @@ public class BottleController {
     }
 
     @PostMapping("post")
-    public Bottle createBottle(@RequestBody Bottle bottle){
-        return bottleService.createBottle(bottle);
+    public Bottle createBottle(@RequestBody BottleRequestDto bottleRequestDto){
+        return bottleService.createBottle(bottleRequestDto);
     }
 
     @DeleteMapping("delete/{id}")

@@ -1,5 +1,6 @@
 package com.bottle_app.service;
 
+import com.bottle_app.dto.BottleRequestDto;
 import com.bottle_app.dto.BottleResponseDto;
 import com.bottle_app.dto.PageResponseDto;
 import com.bottle_app.model.Bottle;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +28,13 @@ public class BottleServiceImpl implements BottleService{
     private BottleRepository bottleRepository;
 
     @Override
-    public Bottle createBottle(Bottle bottle) {
+    public Bottle createBottle(BottleRequestDto bottleRequestDto) {
+        Bottle bottle = bottleRequestDto.toEntity();
+        bottle.setCreatedAt(new Date());
+
+        //creator=currently logging in user
+        //receiver=select random user in DB
+        //TO DO
         return bottleRepository.save(bottle);
     }
 

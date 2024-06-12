@@ -1,5 +1,6 @@
 package com.bottle_app.service;
 
+import com.bottle_app.dto.BottleRequestDto;
 import com.bottle_app.dto.PageResponseDto;
 import com.bottle_app.model.Bottle;
 import com.bottle_app.model.User;
@@ -7,7 +8,7 @@ import com.bottle_app.model.User;
 import java.util.Optional;
 
 public interface BottleService {
-    Bottle createBottle(Bottle bottle);
+    Bottle createBottle(BottleRequestDto bottleRequestDto);
 
     Optional<Bottle> getBottleById(long bottleid);
 
