@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,7 +27,7 @@ public class User {
     @Column(name = "PASSWORD")
     private String password;
 
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", unique = true)
     private String email;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
@@ -37,6 +38,18 @@ public class User {
     @Column(name = "UPDATED_AT")
     private Date updatedAt;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Column(name = "VERIFIED")
+    private Boolean verified;
+
+    @Column(name = "LOCKED")
+    private Boolean locked;
+
+    @Column(name = "ACC_CRED_EXPIRED")
+    private Boolean accountCredentialsExpired;
+
     @OneToMany(mappedBy = "creator", cascade = CascadeType.PERSIST)
     private List<Bottle> created = new ArrayList<>();
 
@@ -44,12 +57,14 @@ public class User {
     private List<Bottle> received = new ArrayList<>();
 
     @Builder
-    public User(String username, String password, String email, Date createdAt, Date updatedAt) {
+    public User(String username, String password, String email, Date createdAt, Date updatedAt, Role role, Boolean verified) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.role = role;
+        this.verified = verified;
     }
 
     public void addCreated(Bottle bottle) {

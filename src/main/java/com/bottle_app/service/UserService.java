@@ -1,17 +1,14 @@
 package com.bottle_app.service;
 
+import com.bottle_app.dto.LoginRequestDto;
+import com.bottle_app.dto.RegisterRequestDto;
+import com.bottle_app.dto.TokenDto;
 import com.bottle_app.model.User;
 
 import java.util.Optional;
 
 public interface UserService {
-    User createUser(User user);
+    void createUser(RegisterRequestDto registerRequestDto);
 
-    Optional<User> getUserById(long userid);
-
-
-    void updateUser(long userid, User bottle);
-
-    void deleteUserById(long userid);
-
+    TokenDto login(LoginRequestDto loginRequestDto);
 }

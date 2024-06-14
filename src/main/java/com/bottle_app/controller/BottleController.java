@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/bottles/")
+@RequestMapping("/bottles")
 public class BottleController {
 
     private static final Logger log = LoggerFactory.getLogger(BottleController.class);
@@ -30,17 +30,17 @@ public class BottleController {
         return bottleService.getBottleByReceiver(new User(), page, size);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public Optional<Bottle> getBottleById(@PathVariable("id") long bottleid){
         return bottleService.getBottleById(bottleid);
     }
 
-    @PostMapping("post")
+    @PostMapping("/post")
     public Bottle createBottle(@RequestBody BottleRequestDto bottleRequestDto){
         return bottleService.createBottle(bottleRequestDto);
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/delete/{id}")
     void deleteBottleById(@PathVariable("id") long bottleid){
         bottleService.deleteBottleById(bottleid);
     }
