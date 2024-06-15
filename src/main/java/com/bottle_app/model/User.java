@@ -5,21 +5,24 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Data
 @Entity
 @Table(name = "USER")
 @NoArgsConstructor
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
+
+    @Column(name = "RAND_ID", unique = true)
+    private Long randId; //random index for sending bottle randomly
 
     @Column(name = "USERNAME")
     private String username;
@@ -57,7 +60,7 @@ public class User {
     private List<Bottle> received = new ArrayList<>();
 
     @Builder
-    public User(String username, String password, String email, Date createdAt, Date updatedAt, Role role, Boolean verified) {
+    public User(String username, String password, String email, Date createdAt, Date updatedAt, Role role, Boolean verified, long randId) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -65,6 +68,9 @@ public class User {
         this.updatedAt = updatedAt;
         this.role = role;
         this.verified = verified;
+        this.locked = false;
+        this.accountCredentialsExpired = false;
+        this.randId = randId;
     }
 
     public void addCreated(Bottle bottle) {
@@ -74,5 +80,31 @@ public class User {
     public void addReceived(Bottle bottle) {
         this.received.add(bottle);
         bottle.setReceiver(this);
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(this.role.name()));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !this.locked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return !this.accountCredentialsExpired;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return !this.verified;
     }
 }

@@ -7,6 +7,8 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +24,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
+    private static final Logger log = LoggerFactory.getLogger(JwtUtil.class);
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -56,18 +59,24 @@ public class JwtUtil {
 
     //get access token from header
     public String resolveAccessToken(HttpServletRequest request){
-        return request.getHeader("Authorization");
+        if(request.getHeader("Authorization") != null){
+            return request.getHeader("Authorization").substring(7);
+        }
+        return null;
     }
 
     //get refresh token from header
     public String resolveRefreshToken(HttpServletRequest request){
-        return request.getHeader("RefreshToken");
+        if(request.getHeader("RefreshToken") != null){
+            return request.getHeader("RefreshToken").substring(7);
+        }
+        return null;
     }
 
     //get authentication from access token
     public Authentication getAuthentication(String token){
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserEmail(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "");
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     //get userEmail from token
@@ -77,6 +86,13 @@ public class JwtUtil {
                 .parseSignedClaims(token)
                 .getPayload().getSubject();
     }
+
+    //recreate access token
+    public String regenerateAccessToken(String username){
+        //TO DO
+        return "";
+    }
+
 
     //create access token
     private String generateAccessToken(User user) {

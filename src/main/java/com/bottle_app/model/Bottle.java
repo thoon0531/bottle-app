@@ -1,6 +1,7 @@
 package com.bottle_app.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -28,10 +29,14 @@ public class Bottle {
     @Column(name = "CREATED_AT")
     private Date createdAt;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CREATOR_ID")
     private User creator;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "RECEIVER_ID")
     private User receiver;
 
     @Builder

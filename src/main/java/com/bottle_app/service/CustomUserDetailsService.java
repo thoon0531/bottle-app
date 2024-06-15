@@ -23,16 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if(optional.isEmpty()) {
             throw new UsernameNotFoundException(username);
         } else{
-            User user = optional.get();
-            return org.springframework.security.core.userdetails.User
-                    .builder()
-                    .username(user.getUsername())
-                    .password(user.getPassword())
-                    .disabled(!user.getVerified())
-                    .accountExpired(user.getAccountCredentialsExpired())
-                    .accountLocked(user.getLocked())
-                    .roles(user.getRole().name())
-                    .build();
+            return optional.get();
         }
     }
 }
