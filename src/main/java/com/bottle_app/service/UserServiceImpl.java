@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,13 +46,16 @@ public class UserServiceImpl implements UserService {
                 .randId((long)(Math.random()*1000000))
                 .build();
         //TO DO
-        //비밀번호, 이메일 유효성 검사, 비밀번호 확인
+        //check id already exists
         if(userRepository.findByUsername(registerRequestDto.getName()).isPresent()){
             throw new RuntimeException("Username already exists");
         }
+        //check email exists
         if(userRepository.findByEmail(registerRequestDto.getEmail()).isPresent()){
             throw new RuntimeException("Email already exists");
         }
+        //check password, email validation
+        //check password matches
         if(!registerRequestDto.getPassword().matches(registerRequestDto.getPasswordConfirm())){
             throw new RuntimeException("Passwords do not match");
         }
@@ -69,10 +70,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(loginRequestDto.getName()).orElseThrow(
                 () -> new RuntimeException("User not found")
         );
+        //check password,email validation
         //check password
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
             throw new RuntimeException("Wrong password");
         }
+        //check verified
 
         //create jwt token
         return jwtUtil.generateToken(user);
@@ -84,11 +87,11 @@ public class UserServiceImpl implements UserService {
     public Optional<User> getRandomUserExcludeSelf(User user) {
         long count = userRepository.countByIdNot(user.getId());
         Optional<User> userOptional = Optional.empty();
-        log.info("Get random user");
-        log.info("Get user count excluding self: {}", count);
+        //log.info("Get random user");
+        //log.info("Get user count excluding self: {}", count);
 
         if(count > 0){
-            userOptional = userRepository.findRandByIdNot((long)(Math.random()*1000000));
+            userOptional = userRepository.findRandByIdNot(user.getId());
         }
 
         return userOptional;
