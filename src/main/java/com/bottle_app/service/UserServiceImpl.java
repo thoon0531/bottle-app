@@ -3,12 +3,11 @@ package com.bottle_app.service;
 import com.bottle_app.dto.LoginRequestDto;
 import com.bottle_app.dto.RegisterRequestDto;
 import com.bottle_app.dto.TokenDto;
-import com.bottle_app.exception.user.PasswordConfirmNotMatchException;
-import com.bottle_app.exception.user.UserAlreadyExistsException;
-import com.bottle_app.exception.user.UserIsNotVerifiedException;
-import com.bottle_app.exception.user.UserNotFoundException;
+import com.bottle_app.exception.user.*;
+import com.bottle_app.model.EmailVerification;
 import com.bottle_app.model.Role;
 import com.bottle_app.model.User;
+import com.bottle_app.repository.EmailVerificationRepository;
 import com.bottle_app.repository.UserRepository;
 import com.bottle_app.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -32,13 +31,16 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private EmailVerificationRepository emailVerificationRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     private final JwtUtil jwtUtil;
 
     @Override
     @Transactional
-    public void createUser(RegisterRequestDto registerRequestDto) {
+    public User createUser(RegisterRequestDto registerRequestDto) {
         Date now = new Date();
         User user = User.builder()
                 .username(registerRequestDto.getName())
@@ -47,8 +49,9 @@ public class UserServiceImpl implements UserService {
                 .createdAt(now)
                 .updatedAt(now)
                 .role(Role.USER)
-                .verified(true)
+                .verified(false)
                 .randId((long)(Math.random()*1000000))
+                .lastBottleCreation(null)
                 .build();
         //TO DO
         //check id already exists
@@ -64,7 +67,7 @@ public class UserServiceImpl implements UserService {
         if(!registerRequestDto.getPassword().matches(registerRequestDto.getPasswordConfirm())){
             throw new PasswordConfirmNotMatchException("PasswordConfirm is not match");
         }
-        userRepository.save(user);
+        return userRepository.save(user);
 
     }
 
@@ -109,10 +112,57 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    //select bottle creator and update last_bottle_creation
     public User selectUser(Long id) {
-        return userRepository.findById(id).orElseThrow(
+        User user = userRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("User not found")
         );
+        user.setLastBottleCreation(new Date());
+        return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public String generateVerfication(String username) {
+        if(!emailVerificationRepository.existsByUsername(username)){
+            EmailVerification emailVerification = new EmailVerification(username);
+            emailVerification = emailVerificationRepository.save(emailVerification);
+            return emailVerification.getVerificationId().toString();
+        }
+        return getVerficationIdByUsername(username);
+    }
+
+    @Override
+    @Transactional
+    public String getVerficationIdByUsername(String username) {
+        EmailVerification emailVerification =
+                emailVerificationRepository.findByUsername(username);
+        if(emailVerification != null){
+            return emailVerification.getVerificationId().toString();
+        }
+        throw new EmailVerificationNotFoundException("Email verification not found");
+    }
+
+    @Override
+    @Transactional
+    public String getUsernameForVerificationId(String verficationId) {
+        EmailVerification emailVerification = emailVerificationRepository.findById(verficationId).orElseThrow(
+                () -> new EmailVerificationNotFoundException("Email verification not found")
+        );
+        return emailVerification.getUsername();
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        );
+    }
+
+    @Override
+    public User save(User user) {
+        return userRepository.save(user);
     }
 
 

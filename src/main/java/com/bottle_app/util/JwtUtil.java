@@ -54,6 +54,7 @@ public class JwtUtil {
                 .expires_in(Long.valueOf(accessTokenExpiration/1000).intValue())
                 .scope("")
                 .token_type("Bearer")
+                .last_bottle_creation(user.getLastBottleCreation())
                 .build();
     }
 

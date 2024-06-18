@@ -41,6 +41,10 @@ public class User implements UserDetails {
     @Column(name = "UPDATED_AT")
     private Date updatedAt;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    @Column(name = "LAST_BOTTLE_CREATION")
+    private Date lastBottleCreation;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -60,7 +64,7 @@ public class User implements UserDetails {
     private List<Bottle> received = new ArrayList<>();
 
     @Builder
-    public User(String username, String password, String email, Date createdAt, Date updatedAt, Role role, Boolean verified, long randId) {
+    public User(String username, String password, String email, Date createdAt, Date updatedAt, Date lastBottleCreation, Role role, Boolean verified, long randId) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -71,6 +75,7 @@ public class User implements UserDetails {
         this.locked = false;
         this.accountCredentialsExpired = false;
         this.randId = randId;
+        this.lastBottleCreation = lastBottleCreation;
     }
 
     public void addCreated(Bottle bottle) {
