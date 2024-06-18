@@ -3,6 +3,7 @@ package com.bottle_app.service;
 import com.bottle_app.dto.BottleRequestDto;
 import com.bottle_app.dto.BottleResponseDto;
 import com.bottle_app.dto.PageResponseDto;
+import com.bottle_app.exception.bottle.BottleNotFoundException;
 import com.bottle_app.model.Bottle;
 import com.bottle_app.model.User;
 import com.bottle_app.repository.BottleRepository;
@@ -50,8 +51,17 @@ public class BottleServiceImpl implements BottleService{
 
     @Override
     @Transactional
-    public Optional<Bottle> getBottleById(long bottleid) {
-        return bottleRepository.findById(bottleid);
+    public BottleResponseDto getBottleById(long id) {
+
+        Bottle bottle = bottleRepository.findById(id).orElseThrow(
+                () -> new BottleNotFoundException(String.format("No bottle with id %s is found", id))
+        );
+        return BottleResponseDto.builder()
+                .id(bottle.getId())
+                .title(bottle.getTitle())
+                .content(bottle.getContent())
+                .createdAt(bottle.getCreatedAt())
+                .build();
     }
 
     @Override
@@ -74,18 +84,22 @@ public class BottleServiceImpl implements BottleService{
 
     @Override
     @Transactional
-    public void updateBottle(long bottleid, Bottle bottle) {
-        bottleRepository.findById(bottleid).ifPresent(dbBottle -> {
-            dbBottle.setContent(bottle.getContent());
-            dbBottle.setTitle(bottle.getTitle());
-            dbBottle.setCreatedAt(bottle.getCreatedAt());
-            bottleRepository.save(dbBottle);
-        });
+    public Bottle updateBottle(long bottleid, Bottle bottle) {
+        Bottle dbBottle = bottleRepository.findById(bottleid).orElseThrow(
+                () -> new BottleNotFoundException(String.format("No bottle with id %s is found", bottleid))
+        );
+        dbBottle.setContent(bottle.getContent());
+        dbBottle.setTitle(bottle.getTitle());
+        dbBottle.setCreatedAt(bottle.getCreatedAt());
+        return bottleRepository.save(dbBottle);
     }
 
     @Override
     @Transactional
     public void deleteBottleById(long bottleid) {
+        bottleRepository.findById(bottleid).orElseThrow(
+                () -> new BottleNotFoundException(String.format("No bottle with id %s is found", bottleid))
+        );
         bottleRepository.deleteById(bottleid);
     }
 }

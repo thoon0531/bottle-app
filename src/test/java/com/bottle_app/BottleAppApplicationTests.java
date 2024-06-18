@@ -69,8 +69,8 @@ class BottleAppApplicationTests {
         //update
         bottle = Bottle.builder().title("updatedTitle")
                 .content("updated").createdAt(new Date()).build();
-        bottleService.updateBottle(2L, bottle);
-        Assertions.assertThat(bottleRepository.findById(2L).get().getTitle()).isEqualTo("updatedTitle");
+        Bottle updated = bottleService.updateBottle(2L, bottle);
+        Assertions.assertThat(updated.getTitle()).isEqualTo("updatedTitle");
 
 
         //delete

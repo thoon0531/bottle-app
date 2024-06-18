@@ -3,6 +3,10 @@ package com.bottle_app.service;
 import com.bottle_app.dto.LoginRequestDto;
 import com.bottle_app.dto.RegisterRequestDto;
 import com.bottle_app.dto.TokenDto;
+import com.bottle_app.exception.user.PasswordConfirmNotMatchException;
+import com.bottle_app.exception.user.UserAlreadyExistsException;
+import com.bottle_app.exception.user.UserIsNotVerifiedException;
+import com.bottle_app.exception.user.UserNotFoundException;
 import com.bottle_app.model.Role;
 import com.bottle_app.model.User;
 import com.bottle_app.repository.UserRepository;
@@ -11,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,16 +53,16 @@ public class UserServiceImpl implements UserService {
         //TO DO
         //check id already exists
         if(userRepository.findByUsername(registerRequestDto.getName()).isPresent()){
-            throw new RuntimeException("Username already exists");
+            throw new UserAlreadyExistsException("Username already exists");
         }
         //check email exists
         if(userRepository.findByEmail(registerRequestDto.getEmail()).isPresent()){
-            throw new RuntimeException("Email already exists");
+            throw new UserAlreadyExistsException("Email already exists");
         }
         //check password, email validation
         //check password matches
         if(!registerRequestDto.getPassword().matches(registerRequestDto.getPasswordConfirm())){
-            throw new RuntimeException("Passwords do not match");
+            throw new PasswordConfirmNotMatchException("PasswordConfirm is not match");
         }
         userRepository.save(user);
 
@@ -68,14 +73,17 @@ public class UserServiceImpl implements UserService {
     public TokenDto login(LoginRequestDto loginRequestDto) {
         //check ID
         User user = userRepository.findByUsername(loginRequestDto.getName()).orElseThrow(
-                () -> new RuntimeException("User not found")
+                () -> new UserNotFoundException(String.format("Username %s is not exists", loginRequestDto.getName()))
         );
         //check password,email validation
         //check password
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Wrong password");
+            throw new PasswordConfirmNotMatchException("Wrong password");
         }
         //check verified
+        if(!user.getVerified()){
+            throw new UserIsNotVerifiedException("You are not verified. Please verify your email address.");
+        }
 
         //create jwt token
         return jwtUtil.generateToken(user);
@@ -91,7 +99,10 @@ public class UserServiceImpl implements UserService {
         //log.info("Get user count excluding self: {}", count);
 
         if(count > 0){
-            userOptional = userRepository.findRandByIdNot(user.getId());
+            while(userOptional.isEmpty()){
+                userOptional = userRepository.findRandByIdNot(user.getId());
+            }
+            //log.info("Get random user excluding self: {}", userOptional);
         }
 
         return userOptional;
