@@ -40,5 +40,10 @@ public class GlobalExceptionHandler{
     public ResponseEntity<DefaultResponseDto> handlerEmailVerificationNotFoundException(EmailVerificationNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new DefaultResponseDto(ex.getMessage()));
     }
+
+    @ExceptionHandler(value = {IllegalArgumentException.class})
+    public ResponseEntity<DefaultResponseDto> handlerIllegalArgumentException(IllegalArgumentException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new DefaultResponseDto(ex.getMessage()));
+    }
 }
 

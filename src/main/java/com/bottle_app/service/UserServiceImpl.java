@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -147,7 +148,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public String getUsernameForVerificationId(String verficationId) {
-        EmailVerification emailVerification = emailVerificationRepository.findById(verficationId).orElseThrow(
+        EmailVerification emailVerification = emailVerificationRepository.findById(UUID.fromString(verficationId)).orElseThrow(
                 () -> new EmailVerificationNotFoundException("Email verification not found")
         );
         return emailVerification.getUsername();
