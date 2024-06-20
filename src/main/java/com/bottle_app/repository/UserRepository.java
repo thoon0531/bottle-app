@@ -17,6 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     long countByIdNot(Long id);
 
-    @Query(value = "select * from USER where rand_id > FLOOR((RAND()*1000000)) and not USER.ID in(:id) order by rand_id limit 1", nativeQuery = true)
+    @Query(value = "select * from bottle_app.user where rand_id > FLOOR((RAND()*1000000)) and not user.id in(:id) order by rand_id limit 1", nativeQuery = true)
     Optional<User> findRandByIdNot(@Param("id") long id);
 }
