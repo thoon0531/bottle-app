@@ -45,5 +45,15 @@ public class GlobalExceptionHandler{
     public ResponseEntity<DefaultResponseDto> handlerIllegalArgumentException(IllegalArgumentException ex){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new DefaultResponseDto(ex.getMessage()));
     }
+
+    @ExceptionHandler(value = {TokenInvaildException.class})
+    public ResponseEntity<DefaultResponseDto> handlerTokenInvaildException(TokenInvaildException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new DefaultResponseDto(ex.getMessage()));
+    }
+
+    @ExceptionHandler(value = {TokenAlreadyExistsException.class})
+    public ResponseEntity<DefaultResponseDto> handlerTokenAlreadyExistsException(TokenAlreadyExistsException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new DefaultResponseDto(ex.getMessage()));
+    }
 }
 

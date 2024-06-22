@@ -53,4 +53,11 @@ public class UserController {
         userService.save(user);
         return new DefaultResponseDto("User verified successfully");
     }
+
+    //regenerate tokens
+    @PostMapping("/reissue")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public TokenDto reissue(@RequestHeader("RefreshToken") String refreshToken) {
+        return userService.reissueTokens(refreshToken);
+    }
 }

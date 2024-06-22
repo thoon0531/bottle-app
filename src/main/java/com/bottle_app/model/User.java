@@ -45,6 +45,9 @@ public class User implements UserDetails {
     @Column(name = "LAST_BOTTLE_CREATION")
     private Date lastBottleCreation;
 
+    @Column(name = "REFRESH_TOKEN")
+    private String refreshToken;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -64,7 +67,7 @@ public class User implements UserDetails {
     private List<Bottle> received = new ArrayList<>();
 
     @Builder
-    public User(String username, String password, String email, Date createdAt, Date updatedAt, Date lastBottleCreation, Role role, Boolean verified, long randId) {
+    public User(String username, String password, String email, Date createdAt, Date updatedAt, Date lastBottleCreation, Role role, Boolean verified, long randId, String refreshToken ) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -76,6 +79,7 @@ public class User implements UserDetails {
         this.accountCredentialsExpired = false;
         this.randId = randId;
         this.lastBottleCreation = lastBottleCreation;
+        this.refreshToken = refreshToken;
     }
 
     public void addCreated(Bottle bottle) {

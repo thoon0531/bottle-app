@@ -26,6 +26,9 @@ public interface UserService {
     public String getVerficationIdByUsername(String username);
     public String getUsernameForVerificationId(String verficationId);
 
+    //reissue tokens
+    TokenDto reissueTokens(String refreshToken);
+
     //CRUD
     User findByUsername(String username);
     User save(User user);

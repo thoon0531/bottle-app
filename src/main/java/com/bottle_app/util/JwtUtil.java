@@ -60,7 +60,8 @@ public class JwtUtil {
 
     //get access token from header
     public String resolveAccessToken(HttpServletRequest request){
-        if(request.getHeader("Authorization") != null){
+        if(request.getHeader("Authorization") != null && request.getHeader("Authorization").startsWith("Bearer ")
+                    && request.getHeader("Authorization").length() > 7){
             return request.getHeader("Authorization").substring(7);
         }
         return null;
@@ -68,7 +69,8 @@ public class JwtUtil {
 
     //get refresh token from header
     public String resolveRefreshToken(HttpServletRequest request){
-        if(request.getHeader("RefreshToken") != null){
+        if(request.getHeader("RefreshToken") != null && request.getHeader("RefreshToken").startsWith("Bearer ")
+                    && request.getHeader("RefreshToken").length() > 7){
             return request.getHeader("RefreshToken").substring(7);
         }
         return null;
@@ -114,7 +116,6 @@ public class JwtUtil {
     private String generateRefreshToken(User user) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + refreshTokenExpiration);
-
 
         return Jwts.builder()
                 .subject(user.getEmail())

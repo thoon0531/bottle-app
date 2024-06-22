@@ -90,7 +90,11 @@ public class UserServiceImpl implements UserService {
         }
 
         //create jwt token
-        return jwtUtil.generateToken(user);
+        TokenDto tokenDto = jwtUtil.generateToken(user);
+        user.setRefreshToken(tokenDto.getRefresh_token());
+        userRepository.save(user);
+
+        return tokenDto;
 
     }
 
@@ -152,6 +156,27 @@ public class UserServiceImpl implements UserService {
                 () -> new EmailVerificationNotFoundException("Email verification not found")
         );
         return emailVerification.getUsername();
+    }
+
+    @Override
+    public TokenDto reissueTokens(String refreshToken) {
+        refreshToken = refreshToken.replace("Bearer ", "");
+
+        if(jwtUtil.validateToken(refreshToken)){
+            //log.info("Refresh token expired");
+            User user = (User) jwtUtil.getAuthentication(refreshToken).getPrincipal();
+            if (!refreshToken.equals(user.getRefreshToken())) {
+                throw new TokenAlreadyExistsException("Refresh token is already exists");
+            }
+
+            //create jwt token
+            TokenDto tokenDto = jwtUtil.generateToken(user);
+            user.setRefreshToken(tokenDto.getRefresh_token());
+            userRepository.save(user);
+
+            return tokenDto;
+        }
+        throw new TokenInvaildException("Jwt token is not valid");
     }
 
     @Override
