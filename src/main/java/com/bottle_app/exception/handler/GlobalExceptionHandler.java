@@ -3,10 +3,16 @@ package com.bottle_app.exception.handler;
 import com.bottle_app.dto.DefaultResponseDto;
 import com.bottle_app.exception.bottle.BottleNotFoundException;
 import com.bottle_app.exception.user.*;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler{
@@ -51,9 +57,14 @@ public class GlobalExceptionHandler{
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new DefaultResponseDto(ex.getMessage()));
     }
 
-    @ExceptionHandler(value = {TokenAlreadyExistsException.class})
-    public ResponseEntity<DefaultResponseDto> handlerTokenAlreadyExistsException(TokenAlreadyExistsException ex){
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new DefaultResponseDto(ex.getMessage()));
+    @ExceptionHandler(value = {RefreshTokenNotMatchException.class})
+    public ResponseEntity<DefaultResponseDto> handlerRefreshTokenNotMatchException(RefreshTokenNotMatchException ex){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new DefaultResponseDto(ex.getMessage()));
+    }
+
+    @ExceptionHandler(value = {ConstraintViolationException.class})
+    public ResponseEntity<DefaultResponseDto> handlerConstraintViolationException(ConstraintViolationException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new DefaultResponseDto(ex.getMessage()));
     }
 }
 

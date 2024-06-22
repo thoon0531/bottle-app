@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserService {
             //log.info("Refresh token expired");
             User user = (User) jwtUtil.getAuthentication(refreshToken).getPrincipal();
             if (!refreshToken.equals(user.getRefreshToken())) {
-                throw new TokenAlreadyExistsException("Refresh token is already exists");
+                throw new RefreshTokenNotMatchException("Refresh token is not match");
             }
 
             //create jwt token

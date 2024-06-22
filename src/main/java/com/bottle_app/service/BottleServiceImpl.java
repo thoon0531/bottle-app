@@ -34,7 +34,7 @@ public class BottleServiceImpl implements BottleService{
 
     @Override
     @Transactional
-    public Bottle createBottle(User user, BottleRequestDto bottleRequestDto) {
+    public BottleResponseDto createBottle(User user, BottleRequestDto bottleRequestDto) {
         Bottle bottle = bottleRequestDto.toEntity();
         bottle.setCreatedAt(new Date());
         //for defend LazyInitializationException
@@ -46,7 +46,14 @@ public class BottleServiceImpl implements BottleService{
         Optional<User> userOptional = userService.getRandomUserExcludeSelf(user);
         userOptional.ifPresent(value -> value.addReceived(bottle));
 
-        return bottleRepository.save(bottle);
+        Bottle bottleRes = bottleRepository.save(bottle);
+
+        return BottleResponseDto.builder()
+                .id(bottleRes.getId())
+                .title(bottleRes.getTitle())
+                .content(bottleRes.getContent())
+                .createdAt(bottleRes.getCreatedAt())
+                .build();
     }
 
     @Override
@@ -84,14 +91,19 @@ public class BottleServiceImpl implements BottleService{
 
     @Override
     @Transactional
-    public Bottle updateBottle(long bottleid, Bottle bottle) {
+    public BottleResponseDto updateBottle(long bottleid, Bottle bottle) {
         Bottle dbBottle = bottleRepository.findById(bottleid).orElseThrow(
                 () -> new BottleNotFoundException(String.format("No bottle with id %s is found", bottleid))
         );
         dbBottle.setContent(bottle.getContent());
         dbBottle.setTitle(bottle.getTitle());
         dbBottle.setCreatedAt(bottle.getCreatedAt());
-        return bottleRepository.save(dbBottle);
+        bottleRepository.save(dbBottle);
+        return BottleResponseDto.builder()
+                .id(dbBottle.getId())
+                .title(dbBottle.getTitle())
+                .content(dbBottle.getContent())
+                .createdAt(dbBottle.getCreatedAt()).build();
     }
 
     @Override

@@ -10,13 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Optional;
 
 public interface BottleService {
-    Bottle createBottle(User user, BottleRequestDto bottleRequestDto);
+    BottleResponseDto createBottle(User user, BottleRequestDto bottleRequestDto);
 
     BottleResponseDto getBottleById(long id);
 
     PageResponseDto getBottleByReceiver(User user, int page, int size);
 
-    Bottle updateBottle(long bottleid, Bottle bottle);
+    BottleResponseDto updateBottle(long bottleid, Bottle bottle);
 
     void deleteBottleById(long bottleid);
 
