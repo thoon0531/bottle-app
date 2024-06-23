@@ -90,13 +90,6 @@ public class JwtUtil {
                 .getPayload().getSubject();
     }
 
-    //recreate access token
-    public String regenerateAccessToken(String username){
-        //TO DO
-        return "";
-    }
-
-
     //create access token
     private String generateAccessToken(User user) {
         Date now = new Date();
@@ -136,5 +129,4 @@ public class JwtUtil {
             return false;
         }
     }
-
 }

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -63,9 +64,11 @@ public class User implements UserDetails {
     private Boolean accountCredentialsExpired;
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.PERSIST)
+    @ToString.Exclude
     private List<Bottle> created = new ArrayList<>();
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.PERSIST)
+    @ToString.Exclude
     private List<Bottle> received = new ArrayList<>();
 
     @Builder
